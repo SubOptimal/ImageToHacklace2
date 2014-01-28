@@ -8,9 +8,9 @@ This tool converts images files into a string of hexadecimal bytes which can be 
 - Bitmap (BMP)
 - Graphics Interchange Format (GIF)
 - Portable Network Graphics (PNG)
-- JPEG File Interchange Format (JPG / JPEG) - not recommended, based on the compression rate and the resulting artefacts the result might not be what you expect
+- JPEG File Interchange Format (JPG / JPEG) - not recommended, based on the compression rate and hence artefacts the result might not look as you expect
 
-A pixel with white color will be converted as "LED = on" any other pixel will be converted as "LED = off". Best results you will get with monochrom images.
+A pixel with white color is converted as "LED = on" any other pixel is converted as "LED = off". Best results you get with monochrom images.
 
 **supported image size**
 
@@ -34,5 +34,34 @@ printf '\eHL\\00 70 01 1F 08 00 20 42 40 5C 40 42 20\\ \\00 1F FF\\' > /dev/ttyU
 ```
 
 For further information about the above command have a look on the Hacklace 2 wiki[1].
+
+**usage - convert a template file**
+
+A template file is a Hacklace command script or a Shell script inlcuding a output command (see above example) which includes a placeholders for an image file. If the image file from the placeholderncan be found the placeholder is substituted by hexadecimal bytes representing the image file.
+
+template_example.txt
+```
+HL
+\00 7A 01\ It's hip to be [[square.png]] ! \00\
+\00 7A 01\ It's hip to [[smile.png]] ! \00\
+\FF\
+```
+
+```
+java -jar ImageToHacklace2.jar --template template_example.txt
+```
+
+Assuming the image file `square.png` exist in the current directory and the image file `smile.png` does not exist. The file `template_example.txt` will be converted to `template_example.hl` like below.
+
+template_example.hl
+```
+HL
+\00 7A 01\ It's hip to be \1F 08 00 7E 42 42 42 42 7E 00\ ! \00\
+\00 7A 01\ It's hip to [[smile.png]] ! \00\
+\FF\
+```
+
+For further information about the format of a hacklace script have a look on the Hacklace 2 wiki[1].
+
 
 [1] http://wiki.fab4u.de/wiki/Hacklace

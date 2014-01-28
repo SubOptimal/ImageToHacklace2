@@ -18,19 +18,25 @@
 package sub.optimal;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import sub.optimal.hacklace2.Converter;
+import sub.optimal.hacklace2.TemplateProcessor;
+import sub.optimal.util.FileUtil;
 
 /**
  * Main class of ImageToHacklace2 converter.<br><br>
  * This tool converts images files into a string of hexadecimal bytes which can be downloaded<br>
- * as part of an animation onto the "HackLace2"
- * (see <a href="http://wiki.fab4u.de/wiki/Hacklace">http://wiki.fab4u.de/wiki/Hacklace</a>).
+ * as part of an animation onto the "HackLace2" (see <a
+ * href="http://wiki.fab4u.de/wiki/Hacklace">http://wiki.fab4u.de/wiki/Hacklace</a>).
  *
  * @author SubOptimal
  * @version 0.1.0
  */
 public class Img2Hl {
-    private static final String VERSION = "0.1.0";
+
+    private static final String VERSION = "0.1.1";
 
     private static String templateFileName;
     private static String imageFileName;
@@ -38,32 +44,42 @@ public class Img2Hl {
     public static void main(String[] args) {
         processParameters(args);
         if (imageFileName != null) {
-        processImageFile();
+            processImageFile();
         } else if (templateFileName != null) {
             processTemplateFile();
         }
     }
 
+    /**
+     * Process the template file.
+     */
     private static void processTemplateFile() {
-        throw new UnsupportedOperationException("Not supported yet - see TODO");
+        File template = new File(templateFileName);
+        if (FileUtil.isReadableFile(template)) {
+            TemplateProcessor converter = TemplateProcessor.getInstance();
+            try {
+                converter.processTemplateFile(template);
+            } catch (IOException ex) {
+                System.err.println("convertion failed: " + ex.getMessage());
+            }
+        }
     }
 
+    /**
+     * Process an single image file.
+     */
     private static void processImageFile() {
         File image = new File(imageFileName);
-        if (!image.exists() || !image.isFile()) {
-            System.err.println(String.format("file %s: does not exist", image.getName()));
-            System.exit(1);
+        if (FileUtil.isReadableFile(image)) {
+            Converter converter = Converter.getInstance();
+            System.out.println(converter.convertToHacklace(image));
         }
-
-        if (!image.canRead()) {
-            System.err.println(String.format("file %s: no read permission", image.getName()));
-            System.exit(1);
-        }
-
-        Converter converter = Converter.getInstance();
-        System.out.println(converter.convertToHacklace(image));
     }
 
+    /**
+     * Process the passed application parameters.
+     * @param args
+     */
     private static void processParameters(String[] args) {
         if (args.length == 0) {
             showUsage();
@@ -73,13 +89,12 @@ public class Img2Hl {
         for (int i = 0; i < args.length; i++) {
             String opt = args[i];
             if (opt.startsWith("--template")) {
-                // TODO will be implemented as next ;-)
-                processTemplateFile();
                 if ((i + 1) < args.length) {
                     templateFileName = args[++i];
                 } else {
-                    System.err.println("missed parameter for option --template");
+                    System.err.println("parameter missed for option --template");
                     System.exit(1);
+                    processTemplateFile();
                 }
             } else if (opt.startsWith("--")) {
                 System.err.printf("unknown option passed '%s'%n", opt);

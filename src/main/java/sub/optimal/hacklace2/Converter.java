@@ -28,15 +28,41 @@ import javax.imageio.ImageIO;
  */
 public class Converter {
 
-    public static final String HEX_BYTE_MARKER = "\\";
+    private static final String HEX_BYTE_MARKER = "\\";
     public static final String DATABLOCK_START = HEX_BYTE_MARKER + "1F";
     public static final int RGB_WHITE = 16777215;
     private static final String ZERO_LENGTH_STRING = "";
 
+    private Converter() {
+    }
+
+    /**
+     * Return an instance of the converter.
+     *
+     * @return new instance of the {@link Converter}
+     */
     public static Converter getInstance() {
         return new Converter();
     }
 
+    /**
+     * Return the marker which indicate the start/end of hexadecimal bytes in the Hacklace command.
+     *
+     * @return the hexadecimal bytes marker
+     */
+    public static String getHexByteMarker() {
+        return HEX_BYTE_MARKER;
+    }
+
+    /**
+     * Check if the passed image dimension are in the supported output range.
+     *
+     * @param height heigth of the image
+     * @param width width of the image
+     * @return false - if the dimension is below the minimal supported dimension<br>
+     * true - if the dimension is in the supported range, in case the dimension is out the maximum
+     * convertable range an warning is printed
+     */
     private boolean checkDimension(int height, int width) {
         if (height < 1 || width < 1) {
             System.err.println("image dimension out of range: minimal dimension = 1 x 1 pixel");
@@ -51,9 +77,20 @@ public class Converter {
         return true;
     }
 
+    /**
+     * Convert the passed image file into a string of hexadecimal bytes which can be passed to the
+     * Hacklace 2 animation app.
+     *
+     * @param image image file
+     * @return the hexadecimal bytes which represents the passed image
+     */
     public String convertToHacklace(File image) {
         try {
             BufferedImage buffImage = ImageIO.read(image);
+            if (buffImage == null) {
+                System.err.print(image.getName() + ": not supported image file format");
+                return ZERO_LENGTH_STRING;
+            }
             int height = buffImage.getHeight();
             int width = buffImage.getWidth();
             if (!checkDimension(height, width)) {
@@ -76,9 +113,8 @@ public class Converter {
             out.append(HEX_BYTE_MARKER);
             return out.toString();
         } catch (IOException ex) {
-            System.err.println("failure during reading image file: " + ex.getMessage());
+            System.err.println(image.getName() + ": failure during processing - " + ex.getMessage());
             return ZERO_LENGTH_STRING;
         }
     }
-
 }

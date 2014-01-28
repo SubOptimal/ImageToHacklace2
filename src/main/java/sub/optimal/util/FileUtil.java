@@ -26,9 +26,9 @@ import java.io.File;
 public class FileUtil {
 
     /**
-     * Check if the passed {@link File} points to an existing file and can be read by the user.
+     * Check if the passed {@link File} point to an existing file and can be read by the user.
      *
-     * @param file - file to be checked
+     * @param file file to be checked
      * @return true - <code>file</code> point to a file and is readable<br>
      * false - <code>file</file> is either a directory or is not readable
      */
