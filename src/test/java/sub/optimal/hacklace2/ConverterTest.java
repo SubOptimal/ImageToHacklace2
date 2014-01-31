@@ -17,7 +17,13 @@
  */
 package sub.optimal.hacklace2;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import org.junit.Assert;
 import junit.framework.TestSuite;
 import org.junit.Test;
@@ -119,9 +125,104 @@ public class ConverterTest extends TestSuite {
         runConvertToHacklaceTest(fileName, expectedHl.toString());
     }
 
-    private void runConvertToHacklaceTest(String fileName, String expectedHl) {
-        File image = new File(fileName);
+    @Test
+    public void testTemplateProcessorExistingImageFile() {
+        try {
+            String templateBasename = "template_existing_image_file";
+            File hacklaceFile = runTemplateProcessorTest(templateBasename);
+            assertTemplateProcessortTest(templateBasename, hacklaceFile);
+        } catch (IOException ex) {
+            System.err.println("no exception expected: " + ex.getMessage());
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTemplateProcessorNotAnImageFile() {
+        try {
+            String templateBasename = "template_not_an_image_file";
+            File hacklaceFile = runTemplateProcessorTest(templateBasename);
+            assertTemplateProcessortTest(templateBasename, hacklaceFile);
+        } catch (IOException ex) {
+            System.err.println("no exception expected: " + ex.getMessage());
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testTemplateProcessorNotExistingImageFile() {
+        try {
+            String templateBasename = "template_not_existing_image_file";
+            File hacklaceFile = runTemplateProcessorTest(templateBasename);
+            assertTemplateProcessortTest(templateBasename, hacklaceFile);
+        } catch (IOException ex) {
+            System.err.println("no exception expected: " + ex.getMessage());
+            Assert.fail();
+        }
+    }
+
+    /**
+     * Compares the expected output file wth the actual created output file.
+     *
+     * @param templateBasename basename of the template file
+     * @param hacklaceFile {@link File} object representing the Hacklace file which is created
+     * during the conversion of the template
+     * @throws IOException in case reading from one file is failed
+     */
+    private void assertTemplateProcessortTest(String templateBasename, File hacklaceFile) throws IOException {
+        File expectedOutput = new File(getExpectedResultFilename(templateBasename));
+        BufferedReader expectedHl = new BufferedReader(new FileReader(expectedOutput));
+        BufferedReader actualHl = new BufferedReader(new FileReader(hacklaceFile));
+        String inLine;
+        String outLine;
+        do {
+            inLine = expectedHl.readLine();
+            outLine = actualHl.readLine();
+            Assert.assertEquals(inLine, outLine);
+
+        } while (inLine != null && outLine != null);
+    }
+
+    /**
+     * Executes the template processor test.
+     *
+     * @param templateBasename basename of the template file
+     * @return a {@link File} object representing the Hacklace file which is created during the
+     * conversion of the template
+     * @throws IOException
+     */
+    private File runTemplateProcessorTest(String templateBasename) throws IOException {
+        File testInput = new File(getTemplateName(templateBasename));
+        File hacklaceFile = new File(getHacklaceName(templateBasename));
+        if (hacklaceFile.exists()) {
+            hacklaceFile.delete();
+        }
+        TemplateProcessor templateProcessor = TemplateProcessor.getInstance();
+        templateProcessor.processTemplateFile(testInput);
+        hacklaceFile.deleteOnExit();
+        return hacklaceFile;
+    }
+
+    /**
+     * Executes the convert to hacklace test.
+     * @param imageFileName name of the image file to convert
+     * @param expectedHl the expected Hacklace hexadecimal bytes string
+     */
+    private void runConvertToHacklaceTest(String imageFileName, String expectedHl) {
+        File image = new File(imageFileName);
         String hlOutput = converter.convertToHacklace(image);
         Assert.assertEquals(expectedHl, hlOutput);
+    }
+
+    private String getTemplateName(String templateBasename) {
+        return templateBasename + ".txt";
+    }
+
+    private String getHacklaceName(String templateBasename) {
+        return templateBasename + ".hl";
+    }
+
+    private String getExpectedResultFilename(String templateBasename) {
+        return templateBasename + ".expected";
     }
 }
