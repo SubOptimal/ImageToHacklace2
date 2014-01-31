@@ -1,0 +1,4 @@
+HL
+\00 7A 01\ It's hip to be [[square.gif]] ! \00\
+\FF\
+

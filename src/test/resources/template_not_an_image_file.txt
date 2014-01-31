@@ -1,0 +1,4 @@
+HL
+\00 7A 01\ this is [[not_an_image_file.gif]] ! \00\
+\FF\
+
