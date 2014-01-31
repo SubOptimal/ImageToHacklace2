@@ -88,7 +88,7 @@ public class Converter {
         try {
             BufferedImage buffImage = ImageIO.read(image);
             if (buffImage == null) {
-                System.err.print(image.getName() + ": not supported image file format");
+                System.err.println(image.getName() + ": not supported image file format");
                 return ZERO_LENGTH_STRING;
             }
             int height = buffImage.getHeight();
