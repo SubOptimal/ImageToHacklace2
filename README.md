@@ -39,7 +39,7 @@ For further information about the above command have a look on the Hacklace 2 wi
 
 A template file is a Hacklace command script or a Shell script inlcuding a output command (see above example) which includes a placeholders for an image file. If the image file from the placeholderncan be found the placeholder is substituted by hexadecimal bytes representing the image file.
 
-template_example.txt
+<u>template_example.txt</u>
 ```
 HL
 \00 7A 01\ It's hip to be [[square.png]] ! \00\
@@ -53,7 +53,7 @@ java -jar ImageToHacklace2.jar --template template_example.txt
 
 Assuming the image file `square.png` exist in the current directory and the image file `smile.png` does not exist. The file `template_example.txt` will be converted to `template_example.hl` like below.
 
-template_example.hl
+<u>template_example.hl</u>
 ```
 HL
 \00 7A 01\ It's hip to be \1F 08 00 7E 42 42 42 42 7E 00\ ! \00\
