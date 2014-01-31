@@ -131,11 +131,9 @@ public class TemplateProcessor {
                     matchBuffer.append(hacklaceBytes);
                     matchBuffer.append(Converter.getHexByteMarker());
                 } else {
-                    System.out.println(String.format("%s: image could not be not converted", file.getName()));
                     matchBuffer.append(matcher.group());
                 }
             } else {
-                System.out.println(String.format("%s: image skipped", file.getName()));
                 matchBuffer.append(matcher.group());
             }
             matcher.appendReplacement(lineBuffer, matchBuffer.toString());
