@@ -71,7 +71,7 @@ public class TemplateProcessor {
         int indexLastDot = templateFileName.lastIndexOf(".");
         String baseName = templateFileName.substring(0, indexLastDot < 0 ? templateFileName.length() : indexLastDot);
         File hacklaceFile = new File(baseName + ".hl");
-        if (FileUtil.isReadableFile(hacklaceFile)) {
+        if (hacklaceFile.exists()) {
             System.err.println(String.format("%s: output file already exist", hacklaceFile.getName()));
             return;
         }
