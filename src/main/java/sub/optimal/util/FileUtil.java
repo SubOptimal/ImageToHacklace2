@@ -33,14 +33,14 @@ public class FileUtil {
      * false - <code>file</file> is either a directory or is not readable
      */
     public static boolean isReadableFile(File file) {
+        boolean state = true;
         if (!file.exists() || !file.isFile()) {
             System.err.println(String.format("%s: does not exist", file.getName()));
-            return false;
-        }
-        if (!file.canRead()) {
+            state = false;
+        } else if (!file.canRead()) {
             System.err.println(String.format("%s: no read permission", file.getName()));
-            return false;
+            state = false;
         }
-        return true;
+        return state;
     }
 }

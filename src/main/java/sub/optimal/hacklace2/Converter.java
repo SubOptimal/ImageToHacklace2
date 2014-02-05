@@ -64,17 +64,19 @@ public class Converter {
      * convertable range an warning is printed
      */
     private boolean checkDimension(int height, int width) {
-        if (height < 1 || width < 1) {
+        boolean state = true;
+        if (height >= 1 && width >= 1) {
+            if (height > 8) {
+                System.err.println("image height out of range: area will be truncated to 8 pixel height");
+            }
+            if (width > 255) {
+                System.err.println("image width out of range: area will be truncated to 255 pixel width");
+            }
+        } else {
             System.err.println("image dimension out of range: minimal dimension = 1 x 1 pixel");
-            return false;
+            state = false;
         }
-        if (height > 8) {
-            System.err.println("image height out of range: area will be truncated to 8 pixel height");
-        }
-        if (width > 255) {
-            System.err.println("image width out of range: area will be truncated to 255 pixel width");
-        }
-        return true;
+        return state;
     }
 
     /**
