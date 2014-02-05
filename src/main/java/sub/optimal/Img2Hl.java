@@ -19,8 +19,6 @@ package sub.optimal;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import sub.optimal.hacklace2.Converter;
 import sub.optimal.hacklace2.TemplateProcessor;
 import sub.optimal.util.FileUtil;
