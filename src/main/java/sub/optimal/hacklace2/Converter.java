@@ -31,7 +31,6 @@ public class Converter {
     private static final String HEX_BYTE_MARKER = "\\";
     public static final String DATABLOCK_START = HEX_BYTE_MARKER + "1F";
     public static final int RGB_WHITE = 16777215;
-    private static final String ZERO_LENGTH_STRING = "";
 
     private Converter() {
     }
@@ -87,36 +86,35 @@ public class Converter {
      * @return the hexadecimal bytes which represents the passed image
      */
     public String convertToHacklace(File image) {
+        StringBuilder out = new StringBuilder();
         try {
             BufferedImage buffImage = ImageIO.read(image);
             if (buffImage == null) {
                 System.err.println(image.getName() + ": not supported image file format");
-                return ZERO_LENGTH_STRING;
-            }
-            int height = buffImage.getHeight();
-            int width = buffImage.getWidth();
-            if (!checkDimension(height, width)) {
-                return ZERO_LENGTH_STRING;
-            }
-            width = (width < 255 ? width - 1 : 254);
-            height = (height < 8 ? height - 1 : 7);
-            StringBuilder out = new StringBuilder();
-            out.append(String.format("%s %02X", DATABLOCK_START, width + 1));
-            for (int column = 0; column <= width; column++) {
-                int hlValue = 0;
-                for (int row = height; row >= 0; row--) {
-                    hlValue <<= 1;
-                    if ((buffImage.getRGB(column, row) & RGB_WHITE) != RGB_WHITE) {
-                        hlValue++;
+            } else {
+                int height = buffImage.getHeight();
+                int width = buffImage.getWidth();
+                if (checkDimension(height, width)) {
+                    width = (width < 255 ? width - 1 : 254);
+                    height = (height < 8 ? height - 1 : 7);
+                    out.append(String.format("%s %02X", DATABLOCK_START, width + 1));
+                    for (int column = 0; column <= width; column++) {
+                        int hlValue = 0;
+                        for (int row = height; row >= 0; row--) {
+                            hlValue <<= 1;
+                            if ((buffImage.getRGB(column, row) & RGB_WHITE) != RGB_WHITE) {
+                                hlValue++;
+                            }
+                        }
+                        out.append(String.format(" %02X", hlValue));
                     }
+                    out.append(HEX_BYTE_MARKER);
                 }
-                out.append(String.format(" %02X", hlValue));
             }
-            out.append(HEX_BYTE_MARKER);
-            return out.toString();
         } catch (IOException ex) {
             System.err.println(image.getName() + ": failure during processing - " + ex.getMessage());
-            return ZERO_LENGTH_STRING;
+            out.setLength(0);
         }
+        return out.toString();
     }
 }
