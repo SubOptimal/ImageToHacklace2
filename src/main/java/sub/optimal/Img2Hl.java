@@ -35,6 +35,7 @@ import sub.optimal.util.FileUtil;
 public class Img2Hl {
 
     private static final String VERSION = "0.1.1";
+    private static final String USAGE_OUTPUT_FORMAT = "%16s%s%n";
 
     private static String templateFileName;
     private static String imageFileName;
@@ -106,9 +107,9 @@ public class Img2Hl {
     private static void showUsage() {
         System.err.printf("ImageToHacklace2 " + VERSION + "%n%n");
         System.err.printf("usage: java -jar ImageToHacklace2 [ image_file | --template template_file ]%n%n");
-        System.err.printf("%16s%s%n", "image_file -", "an image file to convert into the hacklace databytes");
-        System.err.printf("%16s%s%n", "", "recommended formats: BMP, GIF, PNG");
-        System.err.printf("%16s%s%n", "--template -", "template hacklace configuration file with placeholders");
-        System.err.printf("%16s%s%n", "", "for image files");
+        System.err.printf(USAGE_OUTPUT_FORMAT, "image_file -", "an image file to convert into the hacklace databytes");
+        System.err.printf(USAGE_OUTPUT_FORMAT, "", "recommended formats: BMP, GIF, PNG");
+        System.err.printf(USAGE_OUTPUT_FORMAT, "--template -", "template hacklace configuration file with placeholders");
+        System.err.printf(USAGE_OUTPUT_FORMAT, "", "for image files");
     }
 }
