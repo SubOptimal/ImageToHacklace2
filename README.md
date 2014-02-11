@@ -63,5 +63,8 @@ HL
 
 For further information about the format of a hacklace script have a look on the Hacklace 2 wiki[1].
 
+**download compiled version**
+
+If you don't want to build the tool from source, you can download the compiled release version from following URL: https://github.com/SubOptimal/ImageToHacklace2/releases
 
 [1] http://wiki.fab4u.de/wiki/Hacklace
